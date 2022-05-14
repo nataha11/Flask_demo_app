@@ -10,21 +10,18 @@ app = Flask(__name__)
 @app.route('/add', methods=['POST'])
 def add_item():
     # Fetch and validate input data
-    a = request.form.get('a')
-    b = request.form.get('b')
-    if a is None or b is None:
-        abort(400)
-    try:
-        a = int(a)
-    except ValueError:
+    data = request.json
+    a = data.get('a')
+    b = data.get('b')
+    if a is None or type(a) is not int or b is None:
         abort(400)
     # Try to insert a new entry:
     with sqlite3.conect(DB_PATH) as conn:
         cur = conn.cursor()
         cur.execute('INSERT INTO t1(a, b) VALUES (?, ?)', (a, b))
         conn.commit()
-        # Tell user to load main page again
-    return redirect(url_for('main_page'))  
+        # Normal reply
+    return 'OK'
       
 @app.route('/')
 def main_page():

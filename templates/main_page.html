@@ -3,7 +3,7 @@
         <title>Main page</title>
     </head>
     <body>
-        <table border=1>
+        <table border=1 id="main_table">
             <thead>
                 <tr>
                     {%- for column_name in columns -%}
@@ -21,10 +21,48 @@
                 {%- endfor -%}
             </tbody>
         </table>
-        <form action="{{ url_for('add_item') }}" method="post">
-            A: <input type="text" name="a"><br>
-            B: <input type="text" name="b"><br>
-            <input type="submit" value="Add">
-        </form>
+        A: <input type="text" name="a" id="a"><br>
+        B: <input type="text" name="b" id="b"><br>
+        <input type="submit" value="Add" onclick="add_item()">
+        <script>
+        'strict';
+        function I(elem_id) {
+            return document.getElementById(elem_id);
+        }
+        function append_cell(row, value) {
+            let new_cell = row.insertCell(-1);
+            new_cell.appendChild(document.createTextNode(value));
+        }
+        function add_item() {
+            let a_value = parseint(I('a').value);
+            if (isNaN(a_value) || String(a_value) !== I('a').value) {
+                //todo: error message
+                return
+            }
+            let b_value = I('b').value;
+            let xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if(xhr.readyState != 4) {
+                    return;
+                }
+                if (xhr.status != 200) {
+                    alert('Request failed, see console for details');
+                    console.log('Request failed: ', xhr.statusText)
+                    return;
+                }
+                if (xhr.responseText != "OK") {
+                    alert('Unexpected server reply');
+                    console.log('Unexpected server reply:', xhr.responseText)
+                    return;
+                }
+                let lable_row = I('main_table').insertRow(-1)
+                append_cell(table_row, a_value);
+                append_cell(table_row, b_value);
+            };
+            xhr.open('POST', "{ url_for('add_item') }}", true)
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify({ a: a_value, b: b_value}));
+        }
+        </script>
     </body>
 </html>
