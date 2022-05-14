@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>Main page</title>
+    </head>
+    <body>
+        <table border=1>
+            <thead>
+                <tr>
+                    {%- for column_name in columns -%}
+                    <th>{{ column_name }}</th>
+                    {%- endfor -%}
+                </tr>
+            </thead>
+            <tbody>
+                {%- for row in data -%}
+                <tr>
+                    {%- for cell in row -%}
+                    <td>{{ cell }}</td>
+                    {%- endfor -%}
+                </tr>
+                {%- endfor -%}
+            </tbody>
+        </table>
+    </body>
+</html>
