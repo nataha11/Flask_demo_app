@@ -34,8 +34,10 @@
             new_cell.appendChild(document.createTextNode(value));
         }
         function add_item() {
-            let a_value = parseint(I('a').value);
-            if (isNaN(a_value) || String(a_value) !== I('a').value) {
+            let a_elem = I('a');
+            let b_elem = I('b');
+            let a_value = parseint(a_elem.value);
+            if (a_value != a_elem.value) {
                 //todo: error message
                 return
             }
@@ -58,10 +60,12 @@
                 let lable_row = I('main_table').insertRow(-1)
                 append_cell(table_row, a_value);
                 append_cell(table_row, b_value);
+                a_elem.value = "";
+                b_elem.value = "";
             };
             xhr.open('POST', "{ url_for('add_item') }}", true)
             xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify({ a: a_value, b: b_value}));
+            xhr.send(JSON.stringify({ a: a_value, b: b_elem.value }));
         }
         </script>
     </body>
